@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
 import unittest
 from pathlib import Path
 from test.util import create_sample_csv, create_sample_video, file_remove
@@ -60,8 +61,8 @@ class FuzzyJoinTests(unittest.TestCase):
         execute_query_fetch_all(query)
 
     def tearDown(self):
-        file_remove("dummy.avi")
-        file_remove("dummy.csv")
+        file_remove(f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi")
+        file_remove(f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.csv")
         # clean up
         execute_query_fetch_all("DROP TABLE IF EXISTS MyVideo;")
         execute_query_fetch_all("DROP TABLE IF EXISTS MyVideoCSV;")

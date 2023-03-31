@@ -8,7 +8,6 @@ exit_abnormal() {                         # Function: Exit with error.
   usage
   exit 1 # Failure
 }
-
 MODE="ALL"
 
 while getopts "m:" options; do            
@@ -76,7 +75,7 @@ if [[ "$OSTYPE" != "msys" ]];
 then
     if [[ "$MODE" = "TEST" || "$MODE" = "ALL" ]];
     then
-        PYTHONPATH=./ pytest --cov-report term-missing:skip-covered  --cov-config=.coveragerc --cov-context=test --cov=eva/ -s -v --log-level=WARNING -m "not benchmark" 
+        PYTHONPATH=./ pytest --cov-report term-missing:skip-covered  --cov-config=.coveragerc --cov-context=test --cov=eva/ -s -v --log-level=WARNING -m "not benchmark" -n auto --dist=loadscope
         test_code=$?
         if [ "$test_code" != "0" ];
         then

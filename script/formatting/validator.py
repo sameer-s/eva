@@ -32,14 +32,12 @@ from formatter import LOG
 EXIT_SUCCESS = 0
 EXIT_FAILURE = -1
 
-VALIDATOR_PATTERNS = [re.compile(patterns) for patterns in [
-    r"print"
-]
-]
+VALIDATOR_PATTERNS = [re.compile(patterns) for patterns in [r"print"]]
 
 CODE_SOURCE_DIR = os.path.abspath(os.path.dirname(__file__))
-EVA_DIR = functools.reduce(os.path.join,
-                           [CODE_SOURCE_DIR, os.path.pardir, os.path.pardir])
+EVA_DIR = functools.reduce(
+    os.path.join, [CODE_SOURCE_DIR, os.path.pardir, os.path.pardir]
+)
 
 EVA_SRC_DIR = os.path.join(EVA_DIR, "eva")
 EVA_TEST_DIR = os.path.join(EVA_DIR, "test")
@@ -55,13 +53,13 @@ DIRS = [EVA_SRC_DIR, EVA_TEST_DIR]
 def contains_commented_out_code(line):
     line = line.lstrip()
 
-    if 'utf-8' in line:
+    if "utf-8" in line:
         return False
 
-    if not line.startswith('#'):
+    if not line.startswith("#"):
         return False
 
-    line = line.lstrip(' \t\v\n#').strip()
+    line = line.lstrip(" \t\v\n#").strip()
 
     # Regex for checking function definition; for, with loops;
     # continue and break
@@ -69,24 +67,23 @@ def contains_commented_out_code(line):
         r"def .+\)[\s]*[->]*[\s]*[a-zA-Z_]*[a-zA-Z0-9_]*:$",
         r"with .+ as [a-zA-Z_][a-zA-Z0-9_]*:$",
         r"for [a-zA-Z_][a-zA-Z0-9_]* in .+:$",
-        r'continue$', r'break$'
+        r"continue$",
+        r"break$",
     ]
 
     for regex in regex_list:
         if re.search(regex, line):
             return True
 
-    symbol_list = list('[]{}=%') +\
-        ['print', 'break',
-         'import ', 'elif ']
+    symbol_list = list("[]{}=%") + ["print", "break", "import ", "elif "]
 
     for symbol in symbol_list:
         if symbol in line:
             return True
 
     # Handle return statements in a specific way
-    if 'return' in line:
-        if len(line.split(' ')) >= 2:
+    if "return" in line:
+        if len(line.split(" ")) >= 2:
             return False
         else:
             return True
@@ -94,40 +91,44 @@ def contains_commented_out_code(line):
 
 
 def validate_file(file):
-
     file = os.path.abspath(file)
 
     if not os.path.isfile(file):
         LOG.info("ERROR: " + file + " isn't a file")
         sys.exit(EXIT_FAILURE)
 
-    if not file.endswith('.py'):
+    if not file.endswith(".py"):
         return True
 
     code_validation = True
     line_number = 1
     commented_code = False
 
-    with open(file, 'r') as opened_file:
+    with open(file, "r") as opened_file:
         for line in opened_file:
-
             # Check if the line has commented code
-            if line.lstrip().startswith('#'):
+            if line.lstrip().startswith("#"):
                 commented_code = contains_commented_out_code(line)
 
                 if commented_code:
-                    LOG.info("Commented code "
-                             + "in file " + file
-                             + " Line {}: {}".format(line_number, line.strip()))
+                    LOG.info(
+                        "Commented code "
+                        + "in file "
+                        + file
+                        + " Line {}: {}".format(line_number, line.strip())
+                    )
 
             # Search for a pattern, and report hits
             for validator_pattern in VALIDATOR_PATTERNS:
                 if validator_pattern.search(line):
                     code_validation = False
-                    LOG.info("Unacceptable pattern:"
-                             + validator_pattern.pattern.strip()
-                             + " in file " + file
-                             + " Line {}: {}".format(line_number, line.strip()))
+                    LOG.info(
+                        "Unacceptable pattern:"
+                        + validator_pattern.pattern.strip()
+                        + " in file "
+                        + file
+                        + " Line {}: {}".format(line_number, line.strip())
+                    )
 
             line_number += 1
 
@@ -135,13 +136,11 @@ def validate_file(file):
 
 
 def validate_directory(directory_list):
-
     code_validation = True
 
     for dir in directory_list:
         for dir_path, _, files in os.walk(dir):
             for each_file in files:
-
                 file_path = dir_path + os.path.sep + each_file
 
                 if not validate_file(file_path):
@@ -150,14 +149,14 @@ def validate_directory(directory_list):
     return code_validation
 
 
-if __name__ == '__main__':
-
+if __name__ == "__main__":
     PARSER = argparse.ArgumentParser(
         description="Perform source code validation on EVA."
     )
 
-    PARSER.add_argument("--files", nargs="*",
-                        help="Provide a list of specific files to validate")
+    PARSER.add_argument(
+        "--files", nargs="*", help="Provide a list of specific files to validate"
+    )
 
     ARGS = PARSER.parse_args()
 

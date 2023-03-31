@@ -30,7 +30,7 @@ extensions = [
     "sphinx_external_toc",
     "sphinx.ext.autosectionlabel",
     "sphinx_design",
-    "myst_nb"
+    "myst_nb",
 ]
 
 # The suffix(es) of source filenames.
@@ -42,14 +42,14 @@ master_doc = "index"
 # General information about the project.
 project = "EVA AI-Relational Database System"
 copyright = str(date.today().year) + ", Georgia Tech Database Group."
-author = u"Georgia Tech Database Group"
+author = "Georgia Tech Database Group"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 # The name of the Pygments (syntax highlighting) style to use.
-#pygments_style = "sphinx"
+# pygments_style = "sphinx"
 
 # List of substitutions
 rst_prolog = """
@@ -81,7 +81,7 @@ html_theme_options = {
     },
     "dark_css_variables": {
         "color-background-secondary": "#000",
-    }
+    },
 }
 
 external_toc_path = "_toc.yml"  # optional, default: _toc.yml
@@ -95,21 +95,22 @@ html_sidebars = {
         "sidebar/brand.html",
         "sidebar/search.html",
         "sidebar/navigation.html",
-        "sidebar/scroll-end.html"
+        "sidebar/scroll-end.html",
     ]
 }
 
 # Adding custom css file
-html_static_path = ['_static']
-html_css_files = ['custom.css']
+html_static_path = ["_static"]
+html_css_files = ["custom.css"]
 
 # Adding the Tutorial notebooks to ./docs/source/tutorials/
 
-for i in os.listdir('../tutorials'):
-    if i.endswith('.ipynb'):
-        shutil.copy(f'../tutorials/{i}', './source/tutorials/')
+for i in os.listdir("../tutorials"):
+    if i.endswith(".ipynb"):
+        shutil.copy(f"../tutorials/{i}", "./source/tutorials/")
 
 jupyter_execute_notebooks = "off"
+
 
 # -- Initialize Sphinx ----------------------------------------------
 def setup(sphinx):

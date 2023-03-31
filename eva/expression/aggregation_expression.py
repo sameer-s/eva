@@ -66,7 +66,6 @@ class AggregationExpression(AbstractExpression):
         return batch
 
     def get_symbol(self) -> str:
-
         if self.etype == ExpressionType.AGGREGATION_FIRST:
             return "FIRST"
         if self.etype == ExpressionType.AGGREGATION_LAST:

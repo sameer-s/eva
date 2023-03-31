@@ -37,10 +37,8 @@ class LogicalExpression(AbstractExpression):
 
     def evaluate(self, *args, **kwargs):
         if self.get_children_count() == 2:
-
             left_batch = self.get_child(0).evaluate(*args, **kwargs)
             if self.etype == ExpressionType.LOGICAL_AND:
-
                 if left_batch.all_false():  # check if all are false
                     return left_batch
                 kwargs["mask"] = left_batch.create_mask()
@@ -65,7 +63,6 @@ class LogicalExpression(AbstractExpression):
         return is_subtree_equal and self.etype == other.etype
 
     def get_symbol(self) -> str:
-
         if self.etype == ExpressionType.LOGICAL_AND:
             return "AND"
         elif self.etype == ExpressionType.LOGICAL_OR:

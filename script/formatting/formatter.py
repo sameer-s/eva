@@ -26,11 +26,13 @@ import pkg_resources
 
 background_loop = asyncio.new_event_loop()
 
+
 def background(f):
     def wrapped(*args, **kwargs):
         return background_loop.run_in_executor(None, f, *args, **kwargs)
 
     return wrapped
+
 
 # ==============================================
 # CONFIGURATION
@@ -158,7 +160,6 @@ def check_header(file_path):
 
 
 def format_file(file_path, add_header, strip_header, format_code):
-
     abs_path = os.path.abspath(file_path)
     with open(abs_path, "r+") as fd:
         file_data = fd.read()
@@ -185,7 +186,7 @@ def format_file(file_path, add_header, strip_header, format_code):
             fd.write(new_file_data)
 
         elif format_code:
-            #LOG.info("Formatting File : " + file_path)
+            # LOG.info("Formatting File : " + file_path)
             # ISORT
             isort_command = f"{ISORT_BINARY} --profile  black  {file_path}"
             os.system(isort_command)
@@ -209,9 +210,7 @@ def format_file(file_path, add_header, strip_header, format_code):
 
 # format all the files in the dir passed as argument
 def format_dir(dir_path, add_header, strip_header, format_code):
-
     for subdir, dir, files in os.walk(dir_path):
-
         for file in files:
             if file in IGNORE_FILES:
                 continue
@@ -227,9 +226,10 @@ def format_dir(dir_path, add_header, strip_header, format_code):
 
 # END ADD_HEADERS_DIR(DIR_PATH)
 
+
 @background
 def check_file(file):
-    #print(file)
+    # print(file)
     valid = False
     # only format the default directories
     file_path = str(Path(file).absolute())
@@ -244,13 +244,13 @@ def check_file(file):
             format_file(file, True, False, False)
         format_file(file, False, False, True)
 
+
 # ==============================================
 # Main Function
 # ==============================================
 
 
 if __name__ == "__main__":
-
     parser = argparse.ArgumentParser(
         description="Add/delete headers and/or format source code"
     )
@@ -303,22 +303,18 @@ if __name__ == "__main__":
         )
     elif args.dir_name:
         LOG.info("Scanning directory " + "".join(args.dir_name))
-        format_dir(
-            args.dir_name, args.add_header, args.strip_header, args.format_code
-        )
+        format_dir(args.dir_name, args.add_header, args.strip_header, args.format_code)
     # BY DEFAULT, WE FIX THE MODIFIED FILES
     else:
         # LOG.info("Default fix modified files")
         MERGEBASE = subprocess.check_output(
-            "git merge-base origin/master HEAD", 
-            shell=True, 
-            universal_newlines=True
+            "git merge-base origin/master HEAD", shell=True, universal_newlines=True
         ).rstrip()
         files = (
             subprocess.check_output(
                 f"git diff --name-only --diff-filter=ACRM {MERGEBASE} -- '*.py'",
                 shell=True,
-                universal_newlines=True
+                universal_newlines=True,
             )
             .rstrip()
             .split("\n")

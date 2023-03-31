@@ -39,7 +39,6 @@ class LarkParser(object):
         self._parser = Lark(sql_grammar, parser="lalr")
 
     def parse(self, query_string: str) -> list:
-
         # remove trailing white space
         query_string = query_string.rstrip()
 

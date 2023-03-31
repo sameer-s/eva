@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
 import unittest
 from test.util import create_sample_video, file_remove, load_inbuilt_udfs
 
@@ -41,7 +42,7 @@ class InsertExecutorTest(unittest.TestCase):
         load_inbuilt_udfs()
 
     def tearDown(self):
-        file_remove("dummy.avi")
+        file_remove(f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi")
 
     # integration test
     @unittest.skip("Not supported in current version")

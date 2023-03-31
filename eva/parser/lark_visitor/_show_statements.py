@@ -21,7 +21,6 @@ from eva.parser.types import ShowType
 ##################################################################
 class Show:
     def show_statement(self, tree):
-
         token = tree.children[1]
 
         if token == "UDFS":

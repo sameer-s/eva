@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
 import unittest
 from test.util import (
     FRAME_SIZE,
@@ -38,7 +39,7 @@ class DecordLoaderTest(unittest.TestCase):
         self.video_file_url = create_sample_video()
 
     def tearDown(self):
-        file_remove("dummy.avi")
+        file_remove(f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi")
 
     def test_should_sample_only_iframe(self):
         for k in range(1, 10):
