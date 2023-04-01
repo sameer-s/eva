@@ -253,7 +253,11 @@ class PlanExecutorTest(unittest.TestCase):
         )
 
         # Build plan tree
-        video = TableCatalogEntry("dataset", f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi", table_type=TableType.VIDEO)
+        video = TableCatalogEntry(
+            "dataset",
+            f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi",
+            table_type=TableType.VIDEO,
+        )
         batch_1 = Batch(pd.DataFrame({"data": [1, 2, 3]}))
         batch_2 = Batch(pd.DataFrame({"data": [4, 5, 6]}))
         class_instatnce.load.return_value = map(lambda x: x, [batch_1, batch_2])

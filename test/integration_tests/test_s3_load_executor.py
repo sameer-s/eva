@@ -56,7 +56,11 @@ class S3LoadExecutorTest(unittest.TestCase):
 
     def upload_single_file(self, bucket_name="test-bucket"):
         self.s3_client.create_bucket(Bucket=bucket_name)
-        self.s3_client.upload_file(self.video_file_path, bucket_name, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi")
+        self.s3_client.upload_file(
+            self.video_file_path,
+            bucket_name,
+            f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi",
+        )
 
     def upload_multiple_files(self, bucket_name="test-bucket"):
         self.s3_client.create_bucket(Bucket=bucket_name)
@@ -66,7 +70,10 @@ class S3LoadExecutorTest(unittest.TestCase):
             self.s3_client.upload_file(f"{video_path}/{file}", bucket_name, file)
 
     def tearDown(self):
-        file_remove(f"MyVideo/dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi", parent_dir=self.s3_download_dir)
+        file_remove(
+            f"MyVideo/dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi",
+            parent_dir=self.s3_download_dir,
+        )
 
         for file in os.listdir(self.multiple_video_file_path):
             file_remove(f"MyVideos/{file}", parent_dir=self.s3_download_dir)

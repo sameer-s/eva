@@ -216,7 +216,11 @@ def convert_bbox(bbox):
 
 def create_sample_csv(num_frames=NUM_FRAMES):
     try:
-        os.remove(os.path.join(tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.csv"))
+        os.remove(
+            os.path.join(
+                tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.csv"
+            )
+        )
     except FileNotFoundError:
         pass
 
@@ -241,20 +245,31 @@ def create_sample_csv(num_frames=NUM_FRAMES):
             index += 1
 
     df_sample_meta = pd.DataFrame.from_dict(sample_meta, "index")
-    df_sample_meta.to_csv(os.path.join(tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.csv"), index=False)
-    return os.path.join(tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.csv")
+    df_sample_meta.to_csv(
+        os.path.join(
+            tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.csv"
+        ),
+        index=False,
+    )
+    return os.path.join(
+        tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.csv"
+    )
 
 
 def create_dummy_csv_batches(target_columns=None):
     if target_columns:
         df = pd.read_csv(
-            os.path.join(tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.csv"),
+            os.path.join(
+                tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.csv"
+            ),
             converters={"bbox": convert_bbox},
             usecols=target_columns,
         )
     else:
         df = pd.read_csv(
-            os.path.join(tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.csv"),
+            os.path.join(
+                tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.csv"
+            ),
             converters={"bbox": convert_bbox},
         )
 
@@ -262,7 +277,9 @@ def create_dummy_csv_batches(target_columns=None):
 
 
 def create_csv(num_rows, columns):
-    csv_path = os.path.join(tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.csv")
+    csv_path = os.path.join(
+        tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.csv"
+    )
     try:
         os.remove(csv_path)
     except FileNotFoundError:
@@ -292,7 +309,9 @@ def create_table(table_name, num_rows, num_columns):
 
 
 def create_sample_image():
-    img_path = os.path.join(tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.jpg")
+    img_path = os.path.join(
+        tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.jpg"
+    )
     try:
         os.remove(img_path)
     except FileNotFoundError:
@@ -307,12 +326,18 @@ def create_sample_image():
 
 def create_sample_video(num_frames=NUM_FRAMES):
     try:
-        os.remove(os.path.join(tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi"))
+        os.remove(
+            os.path.join(
+                tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi"
+            )
+        )
     except FileNotFoundError:
         pass
 
     out = cv2.VideoWriter(
-        os.path.join(tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi"),
+        os.path.join(
+            tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi"
+        ),
         cv2.VideoWriter_fourcc("M", "J", "P", "G"),
         10,
         (2, 2),
@@ -322,17 +347,25 @@ def create_sample_video(num_frames=NUM_FRAMES):
         out.write(frame)
 
     out.release()
-    return os.path.join(tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi")
+    return os.path.join(
+        tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi"
+    )
 
 
 def create_sample_video_as_blob(num_frames=NUM_FRAMES):
     try:
-        os.remove(os.path.join(tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi"))
+        os.remove(
+            os.path.join(
+                tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi"
+            )
+        )
     except FileNotFoundError:
         pass
 
     out = cv2.VideoWriter(
-        os.path.join(tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi"),
+        os.path.join(
+            tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi"
+        ),
         cv2.VideoWriter_fourcc("M", "J", "P", "G"),
         10,
         (2, 2),
@@ -343,7 +376,12 @@ def create_sample_video_as_blob(num_frames=NUM_FRAMES):
 
     out.release()
 
-    with open(os.path.join(tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi"), "rb") as f:
+    with open(
+        os.path.join(
+            tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi"
+        ),
+        "rb",
+    ) as f:
         bytes_read = f.read()
         b64_string = str(base64.b64encode(bytes_read))
     return b64_string
@@ -369,7 +407,9 @@ def create_dummy_batches(
     for i in filters:
         data.append(
             {
-                "myvideo.name": os.path.join(video_dir, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi"),
+                "myvideo.name": os.path.join(
+                    video_dir, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi"
+                ),
                 "myvideo.id": i + start_id,
                 "myvideo.data": np.array(
                     np.ones((2, 2, 3)) * float(i + 1) * 25, dtype=np.uint8

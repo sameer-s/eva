@@ -22,15 +22,16 @@ from eva.configuration.configuration_manager import ConfigurationManager
 
 IDENTIFIER_COLUMN = "_row_id"
 
+
 def prefix_worker_id(uri: str):
-   try:
-       worker_id = os.environ["PYTEST_XDIST_WORKER"]
-       base = "eva_catalog.db"
-       uri = uri.replace(base, str(worker_id) + "_" + base)
-   except KeyError:
-       # Single threaded mode
-       pass
-   return uri
+    try:
+        worker_id = os.environ["PYTEST_XDIST_WORKER"]
+        base = "eva_catalog.db"
+        uri = uri.replace(base, str(worker_id) + "_" + base)
+    except KeyError:
+        # Single threaded mode
+        pass
+    return uri
 
 
 class SQLConfig:
