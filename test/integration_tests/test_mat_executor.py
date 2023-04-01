@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
 import unittest
 from test.util import (
     DummyObjectDetector,
@@ -46,7 +47,7 @@ class MaterializedViewTest(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        file_remove("dummy.avi")
+        file_remove(f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi")
         file_remove("ua_detrac.mp4")
         execute_query_fetch_all("DROP TABLE IF EXISTS MyVideo;")
         execute_query_fetch_all("DROP TABLE UATRAC;")

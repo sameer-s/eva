@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import asyncio
+import os
 import time
 import unittest
 from test.markers import windows_skip_marker
@@ -54,11 +55,11 @@ class TimerTests(unittest.TestCase):
         self.assertTrue(response.query_time is not None)
 
         # If response is an error, we do not report time
-        load_query = """LOAD INFILE 'dummy.avi' INTO MyVideo;"""
+        load_query = """LOAD INFILE 'f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi"' INTO MyVideo;"""
         transport = MagicMock()
         transport.write = MagicMock(return_value="response_message")
         response = asyncio.run(handle_request(transport, load_query))
         self.assertTrue(response.error is not None)
         self.assertTrue(response.query_time is None)
 
-        file_remove("dummy.avi")
+        file_remove(f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi")

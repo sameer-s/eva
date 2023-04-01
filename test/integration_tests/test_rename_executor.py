@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
 import unittest
 from test.util import create_sample_csv, create_sample_video, file_remove
 
@@ -30,8 +31,8 @@ class RenameExecutorTest(unittest.TestCase):
         self.csv_file_path = create_sample_csv()
 
     def tearDown(self):
-        file_remove("dummy.avi")
-        file_remove("dummy.csv")
+        file_remove(f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi")
+        file_remove(f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.csv")
 
     # integration test
     def test_should_rename_table(self):

@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
 import unittest
 from test.util import create_sample_csv, file_remove
 
@@ -48,7 +49,7 @@ class LoadExecutorTest(unittest.TestCase):
         return_value=None,
     )
     def test_should_fail_to_find_table(self, catalog_mock):
-        file_path = "dummy.csv"
+        file_path = f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.csv"
         table_info = TableInfo("dummy")
         batch_mem_size = 3000
         file_options = {"file_format": FileFormatType.CSV}
@@ -109,4 +110,4 @@ class LoadExecutorTest(unittest.TestCase):
         )
 
         # remove the dummy.csv
-        file_remove("dummy.csv")
+        file_remove(f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.csv")

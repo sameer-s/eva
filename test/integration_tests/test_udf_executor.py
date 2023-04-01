@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
 import tempfile
 import unittest
 from test.util import (
@@ -52,7 +53,7 @@ class UDFExecutorTest(unittest.TestCase):
         execute_query_fetch_all(create_udf_query)
 
     def tearDown(self):
-        file_remove("dummy.avi")
+        file_remove(f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi")
         execute_query_fetch_all("DROP TABLE IF EXISTS MyVideo;")
 
     # integration test

@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
 import unittest
 from test.util import create_sample_image, file_remove, load_inbuilt_udfs
 
@@ -47,7 +48,7 @@ class OpenTests(unittest.TestCase):
         )
 
     def tearDown(self):
-        file_remove("dummy.jpg")
+        file_remove(f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi")
 
         # Drop table.
         drop_table_query = "DROP TABLE testOpenTable;"

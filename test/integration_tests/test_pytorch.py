@@ -216,7 +216,7 @@ class PytorchTest(unittest.TestCase):
         config = ConfigurationManager()
         tmp_dir_from_config = config.get_value("storage", "tmp_dir")
 
-        img_save_path = os.path.join(tmp_dir_from_config, "dummy.jpg")
+        img_save_path = os.path.join(tmp_dir_from_config, f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.jpg")
         try:
             os.remove(img_save_path)
         except FileNotFoundError:

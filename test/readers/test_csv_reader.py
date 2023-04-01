@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
 import unittest
 from test.util import (
     FRAME_SIZE,
@@ -30,7 +31,7 @@ class CSVLoaderTest(unittest.TestCase):
         self.csv_file_path = create_sample_csv()
 
     def tearDown(self):
-        file_remove("dummy.csv")
+        file_remove(f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.csv")
 
     def test_should_return_one_batch(self):
         column_list = [

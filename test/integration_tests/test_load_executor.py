@@ -51,8 +51,8 @@ class LoadExecutorTest(unittest.TestCase):
         self.csv_file_path = create_sample_csv()
 
     def tearDown(self):
-        file_remove("dummy.avi")
-        file_remove("dummy.csv")
+        file_remove(f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi")
+        file_remove(f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.csv")
         # clean up
         execute_query_fetch_all("DROP TABLE IF EXISTS MyVideos;")
 
@@ -98,7 +98,7 @@ class LoadExecutorTest(unittest.TestCase):
         self.assertEqual(actual_batch, expected_batch)
 
         # remove the source file
-        file_remove("dummy.avi")
+        file_remove(f"dummy_{os.environ['PYTEST_XDIST_WORKER']}.avi")
 
         # try to read the table again
         with self.assertRaises(ExecutorError) as e:
