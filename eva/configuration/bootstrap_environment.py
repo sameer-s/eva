@@ -105,6 +105,7 @@ def bootstrap_environment(eva_config_dir: Path, eva_installation_dir: Path):
         config_obj["storage"]["cache_dir"] = str(cache_dir.resolve())
         config_obj["storage"]["s3_download_dir"] = str(s3_dir.resolve())
         config_obj["storage"]["tmp_dir"] = str(tmp_dir.resolve())
+        config_obj["storage"]["udfs_dir"] = str(udfs_path.resolve())
 
         yml_file.seek(0)
         yml_file.write(yaml.dump(config_obj))
