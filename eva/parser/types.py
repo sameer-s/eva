@@ -41,6 +41,8 @@ class StatementType(EVAEnum):
     DROP_UDF  # noqa: F821
     EXPLAIN  # noqa: F821
     CREATE_INDEX  # noqa: F821
+    BEGIN_TRANSACTION  # noqa: F821
+    END_TRANSACTION  # noqa: F821
     # add other types
 
 

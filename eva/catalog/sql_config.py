@@ -50,30 +50,38 @@ class SQLConfig:
         uri = ConfigurationManager().get_value("core", "catalog_database_uri")
 
         # to parallelize tests using pytest-xdist
-        def prefix_worker_id_to_uri(uri: str):
-            try:
-                worker_id = os.environ["PYTEST_XDIST_WORKER"]
-                base = "eva_catalog.db"
-                # eva_catalog.db -> test_gw1_eva_catalog.db
-                uri = uri.replace(base, "test_" + str(worker_id) + "_" + base)
-            except KeyError:
-                pass
-            return uri
+        # def prefix_worker_id_to_uri(uri: str):
+        #     try:
+        #         worker_id = os.environ["PYTEST_XDIST_WORKER"]
+        #         base = "eva_catalog.db"
+        #         # eva_catalog.db -> test_gw1_eva_catalog.db
+        #         uri = uri.replace(base, "test_" + str(worker_id) + "_" + base)
+        #     except KeyError:
+        #         pass
+        #     return uri
 
-        self.worker_uri = prefix_worker_id_to_uri(str(uri))
+        # self.worker_uri = prefix_worker_id_to_uri(str(uri))
         # set echo=True to log SQL
-        self.engine = create_engine(self.worker_uri, isolation_level="SERIALIZABLE")
+        # self.engine = create_engine(self.worker_uri, isolation_level="SERIALIZABLE")
+
+        self.engine = create_engine(uri)
 
         if self.engine.url.get_backend_name() == "sqlite":
             # enforce foreign key constraint and wal logging for sqlite
             # https://docs.sqlalchemy.org/en/20/dialects/sqlite.html#foreign-key-support
 
             def _enable_sqlite_pragma(dbapi_con, con_record):
+                dbapi_con.isolation_level = None
                 dbapi_con.execute("pragma foreign_keys=ON")
                 dbapi_con.execute("pragma synchronous=NORMAL")
                 dbapi_con.execute("pragma journal_mode=WAL")
 
             event.listen(self.engine, "connect", _enable_sqlite_pragma)
 
+            def _emit_begin(conn):
+                conn.exec_driver_sql("BEGIN EXCLUSIVE")
+
+            event.listen(self.engine, "begin", _emit_begin)
+            
         # statements
         self.session = scoped_session(sessionmaker(bind=self.engine))

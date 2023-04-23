@@ -33,6 +33,7 @@ from eva.optimizer.rules.rules import (
     EmbedFilterIntoGet,
     EmbedSampleIntoGet,
     LogicalApplyAndMergeToPhysical,
+    LogicalBeginTransactionToPhysical,
     LogicalCreateIndexToFaiss,
     LogicalCreateMaterializedViewToPhysical,
     LogicalCreateToPhysical,
@@ -41,6 +42,7 @@ from eva.optimizer.rules.rules import (
     LogicalDerivedGetToPhysical,
     LogicalDropToPhysical,
     LogicalDropUDFToPhysical,
+    LogicalEndTransactionToPhysical,
     LogicalExplainToPhysical,
     LogicalFaissIndexScanToPhysical,
     LogicalFilterToPhysical,
@@ -131,6 +133,8 @@ class RulesManager:
             LogicalCreateIndexToFaiss(),
             LogicalApplyAndMergeToPhysical(),
             LogicalFaissIndexScanToPhysical(),
+            LogicalBeginTransactionToPhysical(),
+            LogicalEndTransactionToPhysical(),
         ]
 
         if ray_enabled:

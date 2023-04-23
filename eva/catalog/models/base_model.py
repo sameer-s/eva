@@ -50,10 +50,11 @@ class CustomModel:
 
         """
         try:
+            self._nest = db_session.begin_nested()
             db_session.add(self)
             self._commit()
         except Exception as e:
-            db_session.rollback()
+            self._nest.rollback()
             logger.error(f"Database save failed : {str(e)}")
             raise e
         return self
@@ -73,26 +74,27 @@ class CustomModel:
                     setattr(self, attr, value)
             return self.save()
         except Exception as e:
-            db_session.rollback()
+            self._nest.rollback()
             logger.error(f"Database update failed : {str(e)}")
             raise e
 
     def delete(self):
         """Delete and commit"""
         try:
+            self._nest = db_session.begin_nested()
             db_session.delete(self)
             self._commit()
         except Exception as e:
-            db_session.rollback()
+            self._nest.rollback()
             logger.error(f"Database delete failed : {str(e)}")
             raise e
 
     def _commit(self):
         """Try to commit. If an error is raised, the session is rollbacked."""
         try:
-            db_session.commit()
+            self._nest.commit()
         except SQLAlchemyError as e:
-            db_session.rollback()
+            self._nest.rollback()
             logger.error(f"Database commit failed : {str(e)}")
             raise e
 
