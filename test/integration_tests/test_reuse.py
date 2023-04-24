@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import os
+import pytest
 import unittest
 from pathlib import Path
 from test.markers import windows_skip_marker
@@ -31,7 +32,7 @@ from eva.optimizer.rules.rules_manager import disable_rules
 from eva.server.command_handler import execute_query_fetch_all
 from eva.utils.stats import Timer
 
-
+@pytest.mark.notparallel
 class ReuseTest(unittest.TestCase):
     def setUp(self):
         CatalogManager().reset()

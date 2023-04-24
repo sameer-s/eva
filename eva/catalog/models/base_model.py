@@ -50,11 +50,10 @@ class CustomModel:
 
         """
         try:
-            self._nest = db_session.begin_nested()
             db_session.add(self)
             self._commit()
         except Exception as e:
-            self._nest.rollback()
+            db_session.rollback()
             logger.error(f"Database save failed : {str(e)}")
             raise e
         return self
@@ -74,29 +73,30 @@ class CustomModel:
                     setattr(self, attr, value)
             return self.save()
         except Exception as e:
-            self._nest.rollback()
+            db_session.rollback()
             logger.error(f"Database update failed : {str(e)}")
             raise e
 
     def delete(self):
         """Delete and commit"""
         try:
-            self._nest = db_session.begin_nested()
             db_session.delete(self)
             self._commit()
         except Exception as e:
-            self._nest.rollback()
+            db_session.rollback()
             logger.error(f"Database delete failed : {str(e)}")
             raise e
 
     def _commit(self):
         """Try to commit. If an error is raised, the session is rollbacked."""
-        try:
-            self._nest.commit()
-        except SQLAlchemyError as e:
-            self._nest.rollback()
-            logger.error(f"Database commit failed : {str(e)}")
-            raise e
+        # If we are in a transaction, we commit when the transaction completes
+        if not db_session.in_transaction():
+            try:
+                db_session.commit()
+            except SQLAlchemyError as e:
+                db_session.rollback()
+                logger.error(f"Database commit failed : {str(e)}")
+                raise e
 
 
 # Custom Base Model to be inherited by all models

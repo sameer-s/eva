@@ -24,7 +24,6 @@ from eva.configuration.configuration_manager import ConfigurationManager
 from eva.udfs.ndarray.open import Open
 
 
-@pytest.mark.notparallel
 class OpenTests(unittest.TestCase):
     def setUp(self):
         self.open_instance = Open()

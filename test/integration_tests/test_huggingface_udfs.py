@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import pytest
 import unittest
 from test.util import create_text_csv, file_remove
 
@@ -21,7 +22,7 @@ from eva.server.command_handler import execute_query_fetch_all
 
 NUM_FRAMES = 10
 
-
+@pytest.mark.notparallel
 class HuggingFaceTests(unittest.TestCase):
     """
     The tests below essentially check for the output format returned by HF.

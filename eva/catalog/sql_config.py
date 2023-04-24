@@ -49,21 +49,6 @@ class SQLConfig:
         """
         uri = ConfigurationManager().get_value("core", "catalog_database_uri")
 
-        # to parallelize tests using pytest-xdist
-        # def prefix_worker_id_to_uri(uri: str):
-        #     try:
-        #         worker_id = os.environ["PYTEST_XDIST_WORKER"]
-        #         base = "eva_catalog.db"
-        #         # eva_catalog.db -> test_gw1_eva_catalog.db
-        #         uri = uri.replace(base, "test_" + str(worker_id) + "_" + base)
-        #     except KeyError:
-        #         pass
-        #     return uri
-
-        # self.worker_uri = prefix_worker_id_to_uri(str(uri))
-        # set echo=True to log SQL
-        # self.engine = create_engine(self.worker_uri, isolation_level="SERIALIZABLE")
-
         self.engine = create_engine(uri)
 
         if self.engine.url.get_backend_name() == "sqlite":
@@ -79,7 +64,7 @@ class SQLConfig:
             event.listen(self.engine, "connect", _enable_sqlite_pragma)
 
             def _emit_begin(conn):
-                conn.exec_driver_sql("BEGIN EXCLUSIVE")
+                conn.exec_driver_sql("BEGIN DEFERRED")
 
             event.listen(self.engine, "begin", _emit_begin)
             
