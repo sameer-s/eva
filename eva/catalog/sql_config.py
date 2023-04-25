@@ -62,11 +62,6 @@ class SQLConfig:
                 dbapi_con.execute("pragma journal_mode=WAL")
 
             event.listen(self.engine, "connect", _enable_sqlite_pragma)
-
-            def _emit_begin(conn):
-                conn.exec_driver_sql("BEGIN DEFERRED")
-
-            event.listen(self.engine, "begin", _emit_begin)
             
         # statements
         self.session = scoped_session(sessionmaker(bind=self.engine))

@@ -15,6 +15,7 @@
 from eva.executor.abstract_executor import AbstractExecutor
 from eva.plan_nodes.end_transaction_plan import EndTransactionPlan
 from eva.catalog.sql_config import SQLConfig
+from eva.storage.transaction_manager import TransactionManager
 
 class EndTransactionExecutor(AbstractExecutor):
     def __init__(self, node: EndTransactionPlan):
@@ -23,3 +24,4 @@ class EndTransactionExecutor(AbstractExecutor):
 
     def exec(self, *args, **kwargs):
         self.session.commit()
+        TransactionManager().transaction_in_progress = False

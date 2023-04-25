@@ -15,6 +15,7 @@
 from eva.executor.abstract_executor import AbstractExecutor
 from eva.plan_nodes.begin_transaction_plan import BeginTransactionPlan
 from eva.catalog.sql_config import SQLConfig
+from eva.storage.transaction_manager import TransactionManager
 
 class BeginTransactionExecutor(AbstractExecutor):
     def __init__(self, node: BeginTransactionPlan):
@@ -23,3 +24,4 @@ class BeginTransactionExecutor(AbstractExecutor):
 
     def exec(self, *args, **kwargs):
         self.session.begin()
+        TransactionManager().transaction_in_progress = True

@@ -43,6 +43,7 @@ from eva.optimizer.rules.rules import (
     EmbedFilterIntoGet,
     EmbedSampleIntoGet,
     LogicalApplyAndMergeToPhysical,
+    LogicalBeginTransactionToPhysical,
     LogicalCreateIndexToFaiss,
     LogicalCreateMaterializedViewToPhysical,
     LogicalCreateToPhysical,
@@ -51,6 +52,7 @@ from eva.optimizer.rules.rules import (
     LogicalDerivedGetToPhysical,
     LogicalDropToPhysical,
     LogicalDropUDFToPhysical,
+    LogicalEndTransactionToPhysical,
     LogicalExplainToPhysical,
     LogicalFaissIndexScanToPhysical,
     LogicalFilterToPhysical,
@@ -151,6 +153,8 @@ class RulesTest(unittest.TestCase):
             Promise.LOGICAL_CREATE_INDEX_TO_FAISS,
             Promise.LOGICAL_APPLY_AND_MERGE_TO_PHYSICAL,
             Promise.LOGICAL_FAISS_INDEX_SCAN_TO_PHYSICAL,
+            Promise.LOGICAL_BEGIN_TRANSACTION_TO_PHYSICAL,
+            Promise.LOGICAL_END_TRANSACTION_TO_PHYSICAL,
         ]
 
         for promise in implementation_promises:
@@ -240,6 +244,8 @@ class RulesTest(unittest.TestCase):
             LogicalCreateIndexToFaiss(),
             LogicalApplyAndMergeToPhysical(),
             LogicalFaissIndexScanToPhysical(),
+            LogicalBeginTransactionToPhysical(),
+            LogicalEndTransactionToPhysical(),
         ]
 
         if ray_enabled:
