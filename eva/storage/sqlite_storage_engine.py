@@ -28,6 +28,7 @@ from eva.catalog.sql_config import IDENTIFIER_COLUMN, SQLConfig
 from eva.models.storage.batch import Batch
 from eva.parser.table_ref import TableInfo
 from eva.storage.abstract_storage_engine import AbstractStorageEngine
+from eva.storage.transaction_manager import TransactionManager
 from eva.utils.generic_utils import PickleSerializer, get_size
 from eva.utils.logging_manager import logger
 
@@ -100,7 +101,8 @@ class SQLStorageEngine(AbstractStorageEngine):
         # https://sparrigan.github.io/sql/sqla/2016/01/03/dynamic-tables.html
         new_table = type("__placeholder_class_name", (BaseModel,), attr_dict)()
         BaseModel.metadata.tables[table.name].create(self._sql_engine)
-        self._sql_session.commit()
+        if not TransactionManager().transaction_in_progress:
+            self._sql_session.commit()
         return new_table
 
     def drop(self, table: TableCatalogEntry):
@@ -111,7 +113,8 @@ class SQLStorageEngine(AbstractStorageEngine):
             # therefore manually removing the table from the in-memory metadata
             # https://github.com/sqlalchemy/sqlalchemy/issues/5112
             BaseModel.metadata.remove(table_to_remove)
-            self._sql_session.commit()
+            if not TransactionManager().transaction_in_progress:
+                self._sql_session.commit()
         except Exception as e:
             err_msg = f"Failed to drop the table {table.name} with Exception {str(e)}"
             logger.exception(err_msg)
@@ -142,7 +145,8 @@ class SQLStorageEngine(AbstractStorageEngine):
                 row_data = {col: record[idx] for idx, col in enumerate(columns)}
                 data.append(self._dict_to_sql_row(row_data, table_columns))
             self._sql_engine.execute(table_to_update.insert(), data)
-            self._sql_session.commit()
+            if not TransactionManager().transaction_in_progress:
+                self._sql_session.commit()
         except Exception as e:
             err_msg = f"Failed to update the table {table.name} with exception {str(e)}"
             logger.exception(err_msg)
@@ -199,7 +203,8 @@ class SQLStorageEngine(AbstractStorageEngine):
             table_to_delete_from = self._try_loading_table_via_reflection(table.name)
             d = table_to_delete_from.delete().where(sqlalchemy_filter_clause)
             self._sql_engine.execute(d)
-            self._sql_session.commit()
+            if not TransactionManager().transaction_in_progress:
+                self._sql_session.commit()
         except Exception as e:
             err_msg = (
                 f"Failed to delete from the table {table.name} with exception {str(e)}"
