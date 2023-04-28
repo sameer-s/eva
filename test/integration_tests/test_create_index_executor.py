@@ -35,7 +35,6 @@ from eva.server.command_handler import execute_query_fetch_all
 from eva.storage.storage_engine import StorageEngine
 from eva.utils.generic_utils import generate_file_path
 
-
 @pytest.mark.notparallel
 class CreateIndexTest(unittest.TestCase):
     def _index_save_path(self):
@@ -44,13 +43,10 @@ class CreateIndexTest(unittest.TestCase):
             / Path("{}_{}.index".format("HNSW", "testCreateIndexName"))
         )
 
-    @classmethod
-    def setUpClass(cls):
+    def setUp(self):
         # Bootstrap configuration manager.
         ConfigurationManager()
 
-        # Reset catalog.
-        CatalogManager().reset()
         load_udfs_for_testing(mode="minimal")
 
         # Create feature vector table and raw input table.
@@ -112,8 +108,7 @@ class CreateIndexTest(unittest.TestCase):
         )
         storage_engine.write(input_tb_entry, input_batch_data)
 
-    @classmethod
-    def tearDownClass(cls):
+    def tearDown(self):
         query = "DROP TABLE testCreateIndexFeatTable;"
         execute_query_fetch_all(query)
         query = "DROP TABLE testCreateIndexInputTable;"

@@ -38,11 +38,8 @@ from eva.server.command_handler import execute_query_fetch_all
 NUM_FRAMES = 10
 
 
-@pytest.mark.notparallel
 class SelectExecutorTest(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        CatalogManager().reset()
+    def setUp(self):
         video_file_path = create_sample_video(NUM_FRAMES)
         load_query = f"LOAD VIDEO '{video_file_path}' INTO MyVideo;"
         execute_query_fetch_all(load_query)
@@ -50,9 +47,9 @@ class SelectExecutorTest(unittest.TestCase):
         load_query = f"LOAD VIDEO '{ua_detrac}' INTO DETRAC;"
         execute_query_fetch_all(load_query)
         load_udfs_for_testing()
-        cls.table1 = create_table("table1", 100, 3)
-        cls.table2 = create_table("table2", 500, 3)
-        cls.table3 = create_table("table3", 1000, 3)
+        self.table1 = create_table("table1", 100, 3)
+        self.table2 = create_table("table2", 500, 3)
+        self.table3 = create_table("table3", 1000, 3)
 
         cls.meme1 = f"{EVA_ROOT_DIR}/data/detoxify/meme1.jpg"
         cls.meme2 = f"{EVA_ROOT_DIR}/data/detoxify/meme2.jpg"
@@ -60,8 +57,7 @@ class SelectExecutorTest(unittest.TestCase):
         execute_query_fetch_all(f"LOAD IMAGE '{cls.meme1}' INTO MemeImages;")
         execute_query_fetch_all(f"LOAD IMAGE '{cls.meme2}' INTO MemeImages;")
 
-    @classmethod
-    def tearDownClass(cls):
+    def tearDown(self):
         shutdown_ray()
 
         file_remove("dummy.avi")

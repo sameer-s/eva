@@ -12,8 +12,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from eva.storage.transaction_manager import TransactionManager
-
 from sqlalchemy import Column, Integer
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.declarative import declarative_base
@@ -56,7 +54,6 @@ class CustomModel:
             self._commit()
         except Exception as e:
             db_session.rollback()
-            TransactionManager().transaction_in_progress = False
             logger.error(f"Database save failed : {str(e)}")
             raise e
         return self
@@ -77,7 +74,6 @@ class CustomModel:
             return self.save()
         except Exception as e:
             db_session.rollback()
-            TransactionManager().transaction_in_progress = False
             logger.error(f"Database update failed : {str(e)}")
             raise e
 
@@ -88,20 +84,17 @@ class CustomModel:
             self._commit()
         except Exception as e:
             db_session.rollback()
-            TransactionManager().transaction_in_progress = False
             logger.error(f"Database delete failed : {str(e)}")
             raise e
 
     def _commit(self):
         """Try to commit. If an error is raised, the session is rollbacked."""
-        # If we are in a transaction, we commit when the transaction completes
-        if not TransactionManager().transaction_in_progress:
-            try:
-                db_session.commit()
-            except SQLAlchemyError as e:
-                db_session.rollback()
-                logger.error(f"Database commit failed : {str(e)}")
-                raise e
+        try:
+            db_session.commit()
+        except SQLAlchemyError as e:
+            db_session.rollback()
+            logger.error(f"Database commit failed : {str(e)}")
+            raise e
 
 
 # Custom Base Model to be inherited by all models
@@ -115,8 +108,7 @@ def init_db():
         logger.info("Database does not exist, creating database.")
         create_database(engine.url)
         logger.info("Creating tables")
-        BaseModel.metadata.create_all()
-        TransactionManager().transaction_in_progress = False
+        BaseModel.metadata.create_all(checkfirst=True)
 
 
 def drop_db():
@@ -127,4 +119,3 @@ def drop_db():
         db_session.commit()
         BaseModel.metadata.drop_all()
         drop_database(engine.url)
-        TransactionManager().transaction_in_progress = False

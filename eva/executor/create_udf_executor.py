@@ -19,6 +19,7 @@ from eva.configuration.configuration_manager import ConfigurationManager
 from eva.executor.abstract_executor import AbstractExecutor
 from eva.models.storage.batch import Batch
 from eva.plan_nodes.create_udf_plan import CreateUDFPlan
+from eva.storage.transaction_manager import TransactionManager
 from eva.third_party.huggingface.create import gen_hf_io_catalog_entries
 from eva.udfs.decorators.utils import load_io_from_udf_decorators
 from eva.utils.errors import UDFIODefinitionError
@@ -95,6 +96,9 @@ class CreateUDFExecutor(AbstractExecutor):
 
         Calls the catalog to insert a udf catalog entry.
         """
+                
+        TransactionManager().create_udf(self.node.name)
+
         catalog_manager = CatalogManager()
         # check catalog if it already has this udf entry
         if catalog_manager.get_udf_catalog_entry_by_name(self.node.name):

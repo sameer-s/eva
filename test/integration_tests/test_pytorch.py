@@ -28,11 +28,9 @@ from eva.server.command_handler import execute_query_fetch_all
 from eva.udfs.udf_bootstrap_queries import Asl_udf_query, Mvit_udf_query
 
 
-@pytest.mark.notparallel
 class PytorchTest(unittest.TestCase):
     @classmethod
-    def setUpClass(cls):
-        CatalogManager().reset()
+    def setUp(self):
         ua_detrac = f"{EVA_ROOT_DIR}/data/ua_detrac/ua_detrac.mp4"
         mnist = f"{EVA_ROOT_DIR}/data/mnist/mnist.mp4"
         actions = f"{EVA_ROOT_DIR}/data/actions/actions.mp4"
@@ -49,7 +47,7 @@ class PytorchTest(unittest.TestCase):
         load_udfs_for_testing()
 
     @classmethod
-    def tearDownClass(cls):
+    def tearDown(self):
         shutdown_ray()
 
         file_remove("ua_detrac.mp4")

@@ -26,10 +26,8 @@ from eva.server.command_handler import execute_query_fetch_all
 EVA_INSTALLATION_DIR = ConfigurationManager().get_value("core", "eva_installation_dir")
 
 
-@pytest.mark.notparallel
 class FuzzyJoinTests(unittest.TestCase):
     def setUp(self):
-        CatalogManager().reset()
         self.video_file_path = create_sample_video()
         self.image_files_path = Path(
             f"{EVA_ROOT_DIR}/test/data/uadetrac/small-data/MVI_20011/*.jpg"

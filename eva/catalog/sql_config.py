@@ -40,6 +40,7 @@ class SQLConfig:
         """
         if not hasattr(cls, "_instance"):
             cls._instance = super(SQLConfig, cls).__new__(cls)
+            cls._instance._initialized = False
         return cls._instance
 
     def __init__(self):
@@ -47,6 +48,10 @@ class SQLConfig:
 
         Retrieves the database uri for connection from ConfigurationManager.
         """
+        if self._initialized:
+            return
+        self._initialized = True
+        
         uri = ConfigurationManager().get_value("core", "catalog_database_uri")
 
         self.engine = create_engine(uri)
@@ -65,3 +70,4 @@ class SQLConfig:
             
         # statements
         self.session = scoped_session(sessionmaker(bind=self.engine))
+

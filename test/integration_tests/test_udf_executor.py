@@ -36,10 +36,8 @@ from eva.server.command_handler import execute_query_fetch_all
 NUM_FRAMES = 10
 
 
-@pytest.mark.notparallel
 class UDFExecutorTest(unittest.TestCase):
     def setUp(self):
-        CatalogManager().reset()
         video_file_path = create_sample_video(NUM_FRAMES)
         load_query = f"LOAD VIDEO '{video_file_path}' INTO MyVideo;"
         execute_query_fetch_all(load_query)
