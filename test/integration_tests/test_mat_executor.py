@@ -32,12 +32,8 @@ from eva.server.command_handler import execute_query_fetch_all
 NUM_FRAMES = 10
 
 
-@pytest.mark.notparallel
 class MaterializedViewTest(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        # reset the catalog manager before running each test
-        CatalogManager().reset()
+    def setUp(self):
         video_file_path = create_sample_video()
         load_query = f"LOAD VIDEO '{video_file_path}' INTO MyVideo;"
         execute_query_fetch_all(load_query)
@@ -45,13 +41,12 @@ class MaterializedViewTest(unittest.TestCase):
         execute_query_fetch_all(f"LOAD VIDEO '{ua_detrac}' INTO UATRAC;")
         load_udfs_for_testing()
 
-    @classmethod
-    def tearDownClass(cls):
+    def tearDown(self):
         shutdown_ray()
         file_remove("dummy.avi")
         file_remove("ua_detrac.mp4")
-        execute_query_fetch_all("DROP TABLE IF EXISTS MyVideo;")
-        execute_query_fetch_all("DROP TABLE UATRAC;")
+        # execute_query_fetch_all("DROP TABLE IF EXISTS MyVideo;")
+        # execute_query_fetch_all("DROP TABLE UATRAC;")
 
     def test_should_mat_view_with_dummy(self):
         materialized_query = """CREATE MATERIALIZED VIEW dummy_view (id, label)

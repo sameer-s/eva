@@ -10,7 +10,7 @@ ddl_statement: create_database | create_table | create_index | create_udf | crea
 dml_statement: select_statement | insert_statement | update_statement
     | delete_statement | load_statement
     
-utility_statement: describe_statement | show_statement | help_statement | explain_statement
+utility_statement: describe_statement | show_statement | help_statement | explain_statement | begin_transaction | end_transaction
 
 // Data Definition Language
 
@@ -71,6 +71,11 @@ drop_table: DROP TABLE if_exists? table_name
     
 drop_udf: DROP UDF if_exists? udf_name
     
+//    Transaction statements
+
+begin_transaction: BEGIN TRANSACTION
+
+end_transaction: END TRANSACTION
 
 // Data Manipulation Language
 
@@ -305,6 +310,7 @@ ANY:                                 "ANY"
 ANYDIM:                              "ANYDIM"
 AS:                                  "AS"
 ASC:                                 "ASC"
+BEGIN:                               "BEGIN"
 BLOB:                                "BLOB"
 BY:                                  "BY"
 COLUMN:                              "COLUMN"
@@ -316,6 +322,7 @@ DESC:                                "DESC"
 DESCRIBE:                            "DESCRIBE"
 DISTINCT:                            "DISTINCT"
 DROP:                                "DROP"
+END:                                 "END"
 EXIT:                                "EXIT"
 EXISTS:                              "EXISTS"
 EXPLAIN:                             "EXPLAIN"
@@ -359,6 +366,7 @@ SOME:                                "SOME"
 TABLE:                               "TABLE"
 TABLES:                              "TABLES"
 TO:                                  "TO"
+TRANSACTION:                         "TRANSACTION"
 TRUE:                                "TRUE"
 UDFS:                                "UDFS"
 UNION:                               "UNION"

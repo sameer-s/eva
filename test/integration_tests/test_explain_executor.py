@@ -31,18 +31,14 @@ from eva.server.command_handler import execute_query_fetch_all
 NUM_FRAMES = 10
 
 
-@pytest.mark.notparallel
 class ExplainExecutorTest(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        CatalogManager().reset()
+    def setUp(self):
         video_file_path = create_sample_video(NUM_FRAMES)
         load_query = f"LOAD VIDEO '{video_file_path}' INTO MyVideo;"
         execute_query_fetch_all(load_query)
         load_udfs_for_testing(mode="minimal")
 
-    @classmethod
-    def tearDownClass(cls):
+    def tearDown(self):
         file_remove("dummy.avi")
         execute_query_fetch_all("DROP TABLE IF EXISTS MyVideo;")
 

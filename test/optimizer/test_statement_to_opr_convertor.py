@@ -21,6 +21,7 @@ from mock import MagicMock, patch
 from eva.optimizer.operators import (
     Dummy,
     LogicalApplyAndMerge,
+    LogicalBeginTransaction,
     LogicalCreate,
     LogicalCreateIndex,
     LogicalCreateMaterializedView,
@@ -28,6 +29,7 @@ from eva.optimizer.operators import (
     LogicalDelete,
     LogicalDrop,
     LogicalDropUDF,
+    LogicalEndTransaction,
     LogicalExchange,
     LogicalExplain,
     LogicalFaissIndexScan,
@@ -293,6 +295,8 @@ statement_to_opr_convertor.column_definition_to_udf_io"
         join_plan = LogicalJoin(MagicMock(), MagicMock(), MagicMock(), MagicMock())
         project_plan = LogicalProject(MagicMock(), MagicMock())
         apply_and_merge_plan = LogicalApplyAndMerge(MagicMock(), MagicMock())
+        begin_transaction_plan = LogicalBeginTransaction(MagicMock())
+        end_transaction_plan = LogicalEndTransaction(MagicMock())
 
         create_plan.append_child(create_udf_plan)
 
@@ -323,6 +327,8 @@ statement_to_opr_convertor.column_definition_to_udf_io"
         plans.append(exchange_plan)
         plans.append(faiss_plan)
         plans.append(project_plan)
+        plans.append(begin_transaction_plan)
+        plans.append(end_transaction_plan)
 
         derived_operators = list(get_all_subclasses(Operator))
 

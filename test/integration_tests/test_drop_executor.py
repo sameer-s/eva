@@ -24,11 +24,8 @@ from eva.executor.executor_utils import ExecutorError
 from eva.server.command_handler import execute_query_fetch_all
 
 
-@pytest.mark.notparallel
 class DropExecutorTest(unittest.TestCase):
     def setUp(self):
-        # reset the catalog manager before running each test
-        CatalogManager().reset()
         self.video_file_path = create_sample_video()
 
     def tearDown(self):
@@ -74,14 +71,7 @@ class DropExecutorTest(unittest.TestCase):
             execute_query_fetch_all(drop_query)
 
 
-@pytest.mark.notparallel
 class DropUDFExecutorTest(unittest.TestCase):
-    def setUp(self):
-        CatalogManager().reset()
-
-    def tearDown(self):
-        pass
-
     def run_create_udf_query(self):
         create_udf_query = """CREATE UDF DummyObjectDetector
             INPUT  (Frame_Array NDARRAY UINT8(3, 256, 256))

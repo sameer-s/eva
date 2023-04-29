@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import pytest
 import unittest
 from test.util import shutdown_ray
 
@@ -19,11 +20,8 @@ from eva.catalog.catalog_manager import CatalogManager
 from eva.configuration.constants import EVA_ROOT_DIR
 from eva.server.command_handler import execute_query_fetch_all
 
-
 class LikeTest(unittest.TestCase):
     def setUp(self):
-        # reset the catalog manager before running each test
-        CatalogManager().reset()
         meme1 = f"{EVA_ROOT_DIR}/data/detoxify/meme1.jpg"
         meme2 = f"{EVA_ROOT_DIR}/data/detoxify/meme2.jpg"
 

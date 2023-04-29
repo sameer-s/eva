@@ -35,13 +35,10 @@ from eva.parser.types import FileFormatType
 from eva.server.command_handler import execute_query_fetch_all
 
 
-@pytest.mark.notparallel
 class S3LoadExecutorTest(unittest.TestCase):
     mock_s3 = mock_s3()
 
     def setUp(self):
-        # reset the catalog manager before running each test
-        CatalogManager().reset()
         self.video_file_path = create_sample_video()
         self.multiple_video_file_path = f"{EVA_ROOT_DIR}/data/sample_videos/1"
         self.s3_download_dir = ConfigurationManager().get_value(

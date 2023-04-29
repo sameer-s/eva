@@ -14,6 +14,7 @@
 # limitations under the License.
 from pathlib import Path
 
+import os
 import pandas as pd
 
 from eva.catalog.catalog_manager import CatalogManager
@@ -25,6 +26,7 @@ from eva.models.storage.batch import Batch
 from eva.plan_nodes.load_data_plan import LoadDataPlan
 from eva.storage.abstract_storage_engine import AbstractStorageEngine
 from eva.storage.storage_engine import StorageEngine
+from eva.storage.transaction_manager import TransactionManager
 from eva.utils.errors import DatasetFileNotFoundError
 from eva.utils.logging_manager import logger
 from eva.utils.s3_utils import download_from_s3
@@ -37,6 +39,7 @@ class LoadMultimediaExecutor(AbstractExecutor):
         self.media_type = self.node.file_options["file_format"]
 
     def exec(self, *args, **kwargs):
+        TransactionManager().create_table(self.node.table_info)
         storage_engine = None
         table_obj = None
         try:
@@ -88,6 +91,8 @@ class LoadMultimediaExecutor(AbstractExecutor):
                 )
                 do_create = True
 
+            TransactionManager().lock_multimedia_file(Path(table_obj.file_url).stem)
+
             storage_engine = StorageEngine.factory(table_obj)
             if do_create:
                 storage_engine.create(table_obj)
@@ -103,7 +108,7 @@ class LoadMultimediaExecutor(AbstractExecutor):
             if storage_engine and table_obj:
                 self._rollback_load(storage_engine, table_obj, do_create)
             err_msg = f"Load {self.media_type.name} failed: encountered unexpected error {str(e)}"
-            logger.error(err_msg)
+            logger.error(os.environ['PYTEST_XDIST_WORKER'] + " " + err_msg)
             raise ExecutorError(err_msg)
         else:
             yield Batch(

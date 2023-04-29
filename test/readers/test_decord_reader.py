@@ -34,7 +34,6 @@ from eva.expression.tuple_value_expression import TupleValueExpression
 from eva.readers.decord_reader import DecordReader
 
 
-@pytest.mark.notparallel
 class DecordLoaderTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):

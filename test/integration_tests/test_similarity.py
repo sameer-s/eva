@@ -25,11 +25,8 @@ from eva.server.command_handler import execute_query_fetch_all
 from eva.storage.storage_engine import StorageEngine
 
 
-@pytest.mark.notparallel
 class SimilarityTests(unittest.TestCase):
     def setUp(self):
-        CatalogManager().reset()
-
         # Prepare needed UDFs and data_col.
         load_udfs_for_testing(mode="minimal")
         self.img_path = create_sample_image()

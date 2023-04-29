@@ -16,6 +16,7 @@ from typing import Iterator
 
 from eva.executor.abstract_executor import AbstractExecutor
 from eva.executor.apply_and_merge_executor import ApplyAndMergeExecutor
+from eva.executor.begin_transaction_executor import BeginTransactionExecutor
 from eva.executor.create_executor import CreateExecutor
 from eva.executor.create_index_executor import CreateIndexExecutor
 from eva.executor.create_mat_view_executor import CreateMaterializedViewExecutor
@@ -23,6 +24,7 @@ from eva.executor.create_udf_executor import CreateUDFExecutor
 from eva.executor.delete_executor import DeleteExecutor
 from eva.executor.drop_executor import DropExecutor
 from eva.executor.drop_udf_executor import DropUDFExecutor
+from eva.executor.end_transaction_executor import EndTransactionExecutor
 from eva.executor.executor_utils import ExecutorError
 from eva.executor.explain_executor import ExplainExecutor
 from eva.executor.faiss_index_scan_executor import FaissIndexScanExecutor
@@ -145,6 +147,10 @@ class PlanExecutor:
             executor_node = FaissIndexScanExecutor(node=plan)
         elif plan_opr_type == PlanOprType.DELETE:
             executor_node = DeleteExecutor(node=plan)
+        elif plan_opr_type == PlanOprType.BEGIN_TRANSACTION:
+            executor_node = BeginTransactionExecutor(node=plan)
+        elif plan_opr_type == PlanOprType.END_TRANSACTION:
+            executor_node = EndTransactionExecutor(node=plan)
 
         # EXPLAIN does not need to build execution tree for its children
         if plan_opr_type != PlanOprType.EXPLAIN:

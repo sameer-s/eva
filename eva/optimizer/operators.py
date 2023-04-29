@@ -63,6 +63,8 @@ class OperatorType(IntEnum):
     LOGICALCREATEINDEX = auto()
     LOGICAL_APPLY_AND_MERGE = auto()
     LOGICALFAISSINDEXSCAN = auto()
+    LOGICALBEGINTRANSACTION = auto()
+    LOGICALENDTRANSACTION = auto()
     LOGICALDELIMITER = auto()
 
 
@@ -1266,3 +1268,29 @@ class LogicalFaissIndexScan(Operator):
                 self.search_query_expr,
             )
         )
+
+class LogicalBeginTransaction(Operator):
+    def __init__(self, children: List = None):
+        super().__init__(OperatorType.LOGICALBEGINTRANSACTION, children)
+
+    def __eq__(self, other):
+        is_subtree_equal = super().__eq__(other)
+        if not isinstance(other, LogicalBeginTransaction):
+            return False
+        return is_subtree_equal
+
+    def __hash__(self) -> int:
+        return super().__hash__()
+
+class LogicalEndTransaction(Operator):
+    def __init__(self, children: List = None):
+        super().__init__(OperatorType.LOGICALENDTRANSACTION, children)
+
+    def __eq__(self, other):
+        is_subtree_equal = super().__eq__(other)
+        if not isinstance(other, LogicalEndTransaction):
+            return False
+        return is_subtree_equal
+
+    def __hash__(self) -> int:
+        return super().__hash__()

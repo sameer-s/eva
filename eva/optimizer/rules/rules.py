@@ -53,6 +53,7 @@ if TYPE_CHECKING:
 from eva.optimizer.operators import (
     Dummy,
     LogicalApplyAndMerge,
+    LogicalBeginTransaction,
     LogicalCreate,
     LogicalCreateIndex,
     LogicalCreateMaterializedView,
@@ -60,6 +61,7 @@ from eva.optimizer.operators import (
     LogicalDelete,
     LogicalDrop,
     LogicalDropUDF,
+    LogicalEndTransaction,
     LogicalExplain,
     LogicalFaissIndexScan,
     LogicalFilter,
@@ -80,12 +82,14 @@ from eva.optimizer.operators import (
     Operator,
     OperatorType,
 )
+from eva.plan_nodes.begin_transaction_plan import BeginTransactionPlan
 from eva.plan_nodes.create_index_plan import CreateIndexPlan
 from eva.plan_nodes.create_plan import CreatePlan
 from eva.plan_nodes.create_udf_plan import CreateUDFPlan
 from eva.plan_nodes.delete_plan import DeletePlan
 from eva.plan_nodes.drop_plan import DropPlan
 from eva.plan_nodes.drop_udf_plan import DropUDFPlan
+from eva.plan_nodes.end_transaction_plan import EndTransactionPlan
 from eva.plan_nodes.faiss_index_scan_plan import FaissIndexScanPlan
 from eva.plan_nodes.function_scan_plan import FunctionScanPlan
 from eva.plan_nodes.groupby_plan import GroupByPlan
@@ -1190,6 +1194,35 @@ class LogicalFaissIndexScanToPhysical(Rule):
             after.append_child(child)
         yield after
 
+class LogicalBeginTransactionToPhysical(Rule):
+    def __init__(self):
+        pattern = Pattern(OperatorType.LOGICALBEGINTRANSACTION)
+        super().__init__(RuleType.LOGICAL_BEGIN_TRANSACTION_TO_PHYSICAL, pattern)
+
+    def promise(self):
+        return Promise.LOGICAL_BEGIN_TRANSACTION_TO_PHYSICAL
+
+    def check(self, grp_id: int, context: OptimizerContext):
+        return True
+
+    def apply(self, before: LogicalBeginTransaction, context: OptimizerContext):
+        after = BeginTransactionPlan()
+        yield after
+
+class LogicalEndTransactionToPhysical(Rule):
+    def __init__(self):
+        pattern = Pattern(OperatorType.LOGICALENDTRANSACTION)
+        super().__init__(RuleType.LOGICAL_END_TRANSACTION_TO_PHYSICAL, pattern)
+    
+    def promise(self):
+        return Promise.LOGICAL_END_TRANSACTION_TO_PHYSICAL
+
+    def check(self, grp_id: int, context: OptimizerContext):
+        return True
+
+    def apply(self, before: LogicalEndTransaction, context: OptimizerContext):
+        after = EndTransactionPlan()
+        yield after
 
 # IMPLEMENTATION RULES END
 ##############################################

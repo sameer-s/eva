@@ -12,24 +12,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from eva.catalog.catalog_manager import CatalogManager
 from eva.executor.abstract_executor import AbstractExecutor
-from eva.executor.executor_utils import handle_if_not_exists
-from eva.plan_nodes.create_plan import CreatePlan
-from eva.storage.storage_engine import StorageEngine
+from eva.plan_nodes.begin_transaction_plan import BeginTransactionPlan
 from eva.storage.transaction_manager import TransactionManager
 
-
-class CreateExecutor(AbstractExecutor):
-    def __init__(self, node: CreatePlan):
+class BeginTransactionExecutor(AbstractExecutor):
+    def __init__(self, node: BeginTransactionPlan):
         super().__init__(node)
-        self.catalog = CatalogManager()
 
     def exec(self, *args, **kwargs):
-        TransactionManager().create_table(self.node.table_info)
-        if not handle_if_not_exists(self.node.table_info, self.node.if_not_exists):
-            catalog_entry = self.catalog.create_and_insert_table_catalog_entry(
-                self.node.table_info, self.node.column_list
-            )
-            storage_engine = StorageEngine.factory(catalog_entry)
-            storage_engine.create(table=catalog_entry)
+        TransactionManager().begin_transaction()

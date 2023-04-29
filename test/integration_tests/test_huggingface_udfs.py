@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import pytest
 import unittest
 from test.util import create_text_csv, file_remove
 
@@ -21,7 +22,6 @@ from eva.server.command_handler import execute_query_fetch_all
 
 NUM_FRAMES = 10
 
-
 class HuggingFaceTests(unittest.TestCase):
     """
     The tests below essentially check for the output format returned by HF.
@@ -29,8 +29,6 @@ class HuggingFaceTests(unittest.TestCase):
     """
 
     def setUp(self) -> None:
-        CatalogManager().reset()
-
         # Use DETRAC for HF Tests to test variety of models
         query = """LOAD VIDEO 'data/ua_detrac/ua_detrac.mp4' INTO DETRAC;"""
         execute_query_fetch_all(query)

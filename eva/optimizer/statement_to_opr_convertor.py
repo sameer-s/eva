@@ -14,6 +14,7 @@
 # limitations under the License.
 from eva.expression.abstract_expression import AbstractExpression
 from eva.optimizer.operators import (
+    LogicalBeginTransaction,
     LogicalCreate,
     LogicalCreateIndex,
     LogicalCreateMaterializedView,
@@ -21,6 +22,7 @@ from eva.optimizer.operators import (
     LogicalDelete,
     LogicalDrop,
     LogicalDropUDF,
+    LogicalEndTransaction,
     LogicalExplain,
     LogicalFilter,
     LogicalFunctionScan,
@@ -42,6 +44,7 @@ from eva.optimizer.optimizer_utils import (
     column_definition_to_udf_io,
     metadata_definition_to_udf_metadata,
 )
+from eva.parser.begin_transaction_statement import BeginTransactionStatement
 from eva.parser.create_index_statement import CreateIndexStatement
 from eva.parser.create_mat_view_statement import CreateMaterializedViewStatement
 from eva.parser.create_statement import CreateTableStatement
@@ -49,6 +52,7 @@ from eva.parser.create_udf_statement import CreateUDFStatement
 from eva.parser.delete_statement import DeleteTableStatement
 from eva.parser.drop_statement import DropTableStatement
 from eva.parser.drop_udf_statement import DropUDFStatement
+from eva.parser.end_transaction_statement import EndTransactionStatement
 from eva.parser.explain_statement import ExplainStatement
 from eva.parser.insert_statement import InsertTableStatement
 from eva.parser.load_statement import LoadDataStatement
@@ -324,6 +328,14 @@ class StatementToPlanConvertor:
         )
         self._plan = delete_opr
 
+    def visit_begin_transaction(self, statement: BeginTransactionStatement):
+        begin_transaction_opr = LogicalBeginTransaction()
+        self._plan = begin_transaction_opr
+
+    def visit_end_transaction(self, statement: EndTransactionStatement):
+        end_transaction_opr = LogicalEndTransaction()
+        self._plan = end_transaction_opr
+
     def visit(self, statement: AbstractStatement):
         """Based on the instance of the statement the corresponding
            visit is called.
@@ -358,6 +370,10 @@ class StatementToPlanConvertor:
             self.visit_create_index(statement)
         elif isinstance(statement, DeleteTableStatement):
             self.visit_delete(statement)
+        elif isinstance(statement, BeginTransactionStatement):
+            self.visit_begin_transaction(statement)
+        elif isinstance(statement, EndTransactionStatement):
+            self.visit_end_transaction(statement)
         return self._plan
 
     @property

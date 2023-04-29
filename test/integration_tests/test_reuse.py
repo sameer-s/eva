@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import os
+import pytest
 import unittest
 from pathlib import Path
 from test.markers import windows_skip_marker
@@ -31,10 +32,8 @@ from eva.optimizer.rules.rules_manager import disable_rules
 from eva.server.command_handler import execute_query_fetch_all
 from eva.utils.stats import Timer
 
-
 class ReuseTest(unittest.TestCase):
     def setUp(self):
-        CatalogManager().reset()
         ua_detrac = f"{EVA_ROOT_DIR}/data/ua_detrac/ua_detrac.mp4"
         execute_query_fetch_all(f"LOAD VIDEO '{ua_detrac}' INTO DETRAC;")
         load_udfs_for_testing()

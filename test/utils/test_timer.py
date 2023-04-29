@@ -42,9 +42,7 @@ class TimerTests(unittest.TestCase):
         self.assertTrue(sleep_time.total_elapsed_time < 5.2)
         self.assertTrue(sleep_time.total_elapsed_time > 4.9)
 
-    @pytest.mark.notparallel
     def test_timer_with_query(self):
-        CatalogManager().reset()
         video_file_path = create_sample_video(NUM_FRAMES)
         load_query = f"LOAD VIDEO '{video_file_path}' INTO MyVideo;"
         transport = MagicMock()
