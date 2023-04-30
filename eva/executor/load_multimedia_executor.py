@@ -108,7 +108,7 @@ class LoadMultimediaExecutor(AbstractExecutor):
             if storage_engine and table_obj:
                 self._rollback_load(storage_engine, table_obj, do_create)
             err_msg = f"Load {self.media_type.name} failed: encountered unexpected error {str(e)}"
-            logger.error(os.environ['PYTEST_XDIST_WORKER'] + " " + err_msg)
+            logger.error(err_msg)
             raise ExecutorError(err_msg)
         else:
             yield Batch(

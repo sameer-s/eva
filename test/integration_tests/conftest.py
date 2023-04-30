@@ -6,7 +6,6 @@ from eva.storage.transaction_manager import TransactionManager
 @fixture(autouse=True)
 def wrap_test_in_transaction(request):
     if 'notparallel' in request.keywords:
-        CatalogManager().reset()
         yield
     else:
         TransactionManager().begin_transaction()
